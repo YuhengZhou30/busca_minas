@@ -10,20 +10,21 @@ class LayoutSettings extends StatefulWidget {
 }
 
 class LayoutSettingsState extends State<LayoutSettings> {
-  List<String> playerColors = ["Verd", "Blau", "Gris"];
-  List<String> opponentColors = ["Vermell", "Taronja", "Marró"];
+  List<int> midaTaulers = [9, 15];
+  List<int> minesTauler = [5, 10, 20];
 
   // Mostra el CupertinoPicker en un diàleg.
   void _showPicker(String type) {
-    List<String> options = type == "player" ? playerColors : opponentColors;
-    String title = type == "player"
+    List<int> options = type == "tauler" ? midaTaulers : minesTauler;
+    String title = type == "tauler"
         ? "Selecciona el color del jugador"
         : "Selecciona el color de l'oponent";
 
     // Troba l'índex de la opció actual a la llista d'opcions
     AppData appData = Provider.of<AppData>(context, listen: false);
-    String currentValue =
-        type == "player" ? appData.colorPlayer : appData.colorOpponent;
+
+    int currentValue =
+        type == "tauler" ? appData.midaTauler : appData.numeroMines;
     int currentIndex = options.indexOf(currentValue);
     FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentIndex);
@@ -56,16 +57,16 @@ class LayoutSettingsState extends State<LayoutSettings> {
                   itemExtent: 32.0,
                   scrollController: scrollController,
                   onSelectedItemChanged: (index) {
-                    if (type == "player") {
-                      appData.colorPlayer = options[index];
+                    if (type == "tauler") {
+                      appData.midaTauler = options[index];
                     } else {
-                      appData.colorOpponent = options[index];
+                      appData.numeroMines = options[index];
                     }
                     // Actualitzar el widget
                     setState(() {});
                   },
                   children: options
-                      .map((color) => Center(child: Text(color)))
+                      .map((color) => Center(child: Text(color.toString())))
                       .toList(),
                 ),
               ),
@@ -94,16 +95,16 @@ class LayoutSettingsState extends State<LayoutSettings> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Text("Mida del Taulell: "),
+              const Text("Mida del tauler: "),
               CupertinoButton(
-                onPressed: () => _showPicker("player"),
+                onPressed: () => _showPicker("tauler"),
                 child: Text(appData.colorPlayer),
               )
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               const Text("Color de l'oponent: "),
               CupertinoButton(
-                onPressed: () => _showPicker("opponent"),
+                onPressed: () => _showPicker("mines"),
                 child: Text(appData.colorOpponent),
               )
             ]),

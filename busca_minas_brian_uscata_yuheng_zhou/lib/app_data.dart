@@ -11,16 +11,42 @@ class AppData with ChangeNotifier {
   bool gameIsOver = false;
   String gameWinner = '-';
 
+  int midaTauler = 9;
+  int numeroMines = 5;
+
   ui.Image? imagePlayer;
   ui.Image? imageOpponent;
   bool imagesReady = false;
 
   void resetGame() {
+    /*
     board = [
       ['-', '-', '-'],
       ['-', '-', '-'],
       ['-', '-', '-'],
     ];
+    */
+    /*
+    if (midaTauler == 9) {
+      board = [
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+      ];
+    }
+    */
+    if (midaTauler == 9) {
+      board = List.generate(9, (index) => List.filled(9, '-'));
+    } else if (midaTauler == 15) {
+      board = List.generate(15, (index) => List.filled(15, '-'));
+    }
+
     gameIsOver = false;
     gameWinner = '-';
   }
@@ -41,8 +67,8 @@ class AppData with ChangeNotifier {
     bool moveMade = false;
 
     // Buscar una casella lliure '-'
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < midaTauler; i++) {
+      for (int j = 0; j < midaTauler; j++) {
         if (board[i][j] == '-') {
           board[i][j] = 'O';
           moveMade = true;
@@ -63,8 +89,8 @@ class AppData with ChangeNotifier {
       if (board[i][0] == board[i][1] &&
           board[i][1] == board[i][2] &&
           board[i][0] != '-') {
-        gameIsOver = true;
-        gameWinner = board[i][0];
+        //gameIsOver = true;
+        //gameWinner = board[i][0];
         return;
       }
 
@@ -72,8 +98,8 @@ class AppData with ChangeNotifier {
       if (board[0][i] == board[1][i] &&
           board[1][i] == board[2][i] &&
           board[0][i] != '-') {
-        gameIsOver = true;
-        gameWinner = board[0][i];
+        //gameIsOver = true;
+        //gameWinner = board[0][i];
         return;
       }
     }
@@ -82,8 +108,8 @@ class AppData with ChangeNotifier {
     if (board[0][0] == board[1][1] &&
         board[1][1] == board[2][2] &&
         board[0][0] != '-') {
-      gameIsOver = true;
-      gameWinner = board[0][0];
+      //gameIsOver = true;
+      //gameWinner = board[0][0];
       return;
     }
 
@@ -91,8 +117,8 @@ class AppData with ChangeNotifier {
     if (board[0][2] == board[1][1] &&
         board[1][1] == board[2][0] &&
         board[0][2] != '-') {
-      gameIsOver = true;
-      gameWinner = board[0][2];
+      //gameIsOver = true;
+      //gameWinner = board[0][2];
       return;
     }
 

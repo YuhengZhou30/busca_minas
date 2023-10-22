@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 class AppData with ChangeNotifier {
+  Random random = Random();
+
   // App status
   String colorPlayer = "Verd";
   String colorOpponent = "Taronja";
@@ -12,35 +15,14 @@ class AppData with ChangeNotifier {
   String gameWinner = '-';
 
   int midaTauler = 9;
-  int numeroMines = 5;
+  int numeroMines = 20;
+  bool minesColocades = false;
 
   ui.Image? imagePlayer;
   ui.Image? imageOpponent;
   bool imagesReady = false;
 
   void resetGame() {
-    /*
-    board = [
-      ['-', '-', '-'],
-      ['-', '-', '-'],
-      ['-', '-', '-'],
-    ];
-    */
-    /*
-    if (midaTauler == 9) {
-      board = [
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-        ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
-      ];
-    }
-    */
     if (midaTauler == 9) {
       board = List.generate(9, (index) => List.filled(9, '-'));
     } else if (midaTauler == 15) {
@@ -64,9 +46,10 @@ class AppData with ChangeNotifier {
 
   // Fa una jugada de la màquina, només busca la primera posició lliure
   void machinePlay() {
-    bool moveMade = false;
+    //bool moveMade = false;
 
     // Buscar una casella lliure '-'
+    /*
     for (int i = 0; i < midaTauler; i++) {
       for (int j = 0; j < midaTauler; j++) {
         if (board[i][j] == '-') {
@@ -76,6 +59,17 @@ class AppData with ChangeNotifier {
         }
       }
       if (moveMade) break;
+    }
+    */
+    while (numeroMines != 0) {
+      int fila = random.nextInt(midaTauler);
+      int columna = random.nextInt(midaTauler);
+      if (board[fila][columna] != 'X') {
+        board[fila][columna] = 'O';
+        numeroMines--;
+      }
+
+      print(numeroMines);
     }
 
     checkGameWinner();

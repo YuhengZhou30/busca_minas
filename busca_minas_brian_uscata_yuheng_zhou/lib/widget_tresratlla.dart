@@ -26,13 +26,14 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
   @override
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);
-
     return GestureDetector(
       onTapUp: (TapUpDetails details) {
-        final int row =
-            (details.localPosition.dy / (context.size!.height / 3)).floor();
-        final int col =
-            (details.localPosition.dx / (context.size!.width / 3)).floor();
+        final int row = (details.localPosition.dy /
+                (context.size!.height / appData.midaTauler))
+            .floor();
+        final int col = (details.localPosition.dx /
+                (context.size!.width / appData.midaTauler))
+            .floor();
 
         appData.playMove(row, col);
         setState(() {}); // Actualitza la vista
@@ -50,15 +51,17 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
             if (snapshot.connectionState != ConnectionState.done) {
               return const CupertinoActivityIndicator();
             } else {
+              //captura los gestos del usuario, como toques en la pantalla.
               return GestureDetector(
                 onTapUp: (TapUpDetails details) {
-                  final int row =
-                      (details.localPosition.dy / (context.size!.height / 3))
-                          .floor();
-                  final int col =
-                      (details.localPosition.dx / (context.size!.width / 3))
-                          .floor();
-
+                  print(appData.board);
+                  print(appData.midaTauler);
+                  final int row = (details.localPosition.dy /
+                          (context.size!.height / appData.midaTauler))
+                      .floor();
+                  final int col = (details.localPosition.dx /
+                          (context.size!.width / appData.midaTauler))
+                      .floor();
                   appData.playMove(row, col);
                   setState(() {}); // Actualitza la vista
                 },

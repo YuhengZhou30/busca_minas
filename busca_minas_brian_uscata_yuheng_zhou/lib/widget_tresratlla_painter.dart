@@ -15,25 +15,25 @@ class WidgetTresRatllaPainter extends CustomPainter {
       ..color = Colors.black
       ..strokeWidth = 5.0;
 
-    // Definim els punts on es creuaran les línies verticals
-    final double firstVertical = size.width / 3;
-    final double secondVertical = 2 * size.width / 3;
+    for (int i = 0; i < appData.midaTauler - 1; i++) {
+      if (i == 0) {
+        final double l1 = size.width / appData.midaTauler;
+        canvas.drawLine(Offset(l1, 0), Offset(l1, size.height), paint);
+      } else {
+        final double l1 = (i + 1) * size.width / appData.midaTauler;
+        canvas.drawLine(Offset(l1, 0), Offset(l1, size.height), paint);
+      }
+    }
 
-    // Dibuixem les línies verticals
-    canvas.drawLine(
-        Offset(firstVertical, 0), Offset(firstVertical, size.height), paint);
-    canvas.drawLine(
-        Offset(secondVertical, 0), Offset(secondVertical, size.height), paint);
-
-    // Definim els punts on es creuaran les línies horitzontals
-    final double firstHorizontal = size.height / 3;
-    final double secondHorizontal = 2 * size.height / 3;
-
-    // Dibuixem les línies horitzontals
-    canvas.drawLine(
-        Offset(0, firstHorizontal), Offset(size.width, firstHorizontal), paint);
-    canvas.drawLine(Offset(0, secondHorizontal),
-        Offset(size.width, secondHorizontal), paint);
+    for (int i = 0; i < appData.midaTauler - 1; i++) {
+      if (i == 0) {
+        final double h1 = size.height / appData.midaTauler;
+        canvas.drawLine(Offset(0, h1), Offset(size.width, h1), paint);
+      } else {
+        final double h1 = (i + 1) * size.height / appData.midaTauler;
+        canvas.drawLine(Offset(0, h1), Offset(size.width, h1), paint);
+      }
+    }
   }
 
   // Dibuixa la imatge centrada a una casella del taulell
@@ -98,11 +98,11 @@ class WidgetTresRatllaPainter extends CustomPainter {
   // Dibuixa el taulell de joc (creus i rodones)
   void drawBoardStatus(Canvas canvas, Size size) {
     // Dibuixar 'X' i 'O' del tauler
-    double cellWidth = size.width / 3;
-    double cellHeight = size.height / 3;
+    double cellWidth = size.width / appData.midaTauler;
+    double cellHeight = size.height / appData.midaTauler;
 
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < appData.midaTauler; i++) {
+      for (int j = 0; j < appData.midaTauler; j++) {
         if (appData.board[i][j] == 'X') {
           // Dibuixar una X amb el color del jugador
           Color color = Colors.blue;

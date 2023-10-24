@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
+import 'package:cupertino_base/layout_play.dart';
 import 'package:flutter/material.dart';
 
 class AppData with ChangeNotifier {
@@ -81,6 +82,7 @@ void resetGame() {
     if (board[row][col] == '-') {
       board[row][col] = 'X';
       checkGameWinner();
+      LayoutPlayState.contador++;
       /** 
       if (gameWinner == '-') {
         machinePlay();

@@ -85,6 +85,27 @@ class WidgetTresRatllaPainter extends CustomPainter {
     );
   }
 
+  void drawFlag(Canvas canvas, double x, double y, double size, Color color) {
+    double strokeWidth = size * 0.05;
+    double crossSize = size * 0.6;
+
+    Paint paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth;
+
+    double x0 = x + (size - crossSize) / 2;
+    double y0 = y + (size - crossSize) / 2;
+    double x1 = x0 + crossSize;
+    double y1 = y0 + crossSize;
+
+    // Dibujar el fondo de la bandera (un rectángulo)
+    canvas.drawRect(
+        Rect.fromPoints(Offset(x, y), Offset(x + size, y + size)), paint);
+
+    // Dibujar una cruz en el centro de la bandera
+    drawCross(canvas, x0, y0, x1, y1, Colors.white, strokeWidth);
+  }
+
   // Dibuixa un cercle centrat a una casella del taulell
   void drawCircle(Canvas canvas, double x, double y, double radius, Color color,
       double strokeWidth) {
@@ -149,6 +170,8 @@ class WidgetTresRatllaPainter extends CustomPainter {
           double radius = (min(cellWidth, cellHeight) / 2) - 5;
 
           drawImage(canvas, appData.imageOpponent!, x0, y0, x1, y1);
+          //void drawCross(Canvas canvas, double x0, double y0, double x1, double y1, Color color, double strokeWidth) {
+
           drawCircle(canvas, cX, cY, radius, color, 5.0);
         }
       }

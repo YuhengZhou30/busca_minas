@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class AppData with ChangeNotifier {
   String colorOpponent = "Taronja";
 
   List<List<String>> board = [];
+  List<List<int>> boardInfo = [];
   bool gameIsOver = false;
   String gameWinner = '-';
 
@@ -28,7 +30,7 @@ class AppData with ChangeNotifier {
     } else if (midaTauler == 15) {
       board = List.generate(15, (index) => List.filled(15, '-'));
     }
-
+    minesColocades = false;
     gameIsOver = false;
     gameWinner = '-';
   }
@@ -36,16 +38,42 @@ class AppData with ChangeNotifier {
   // Fa una jugada, primer el jugador després la maquina
   void playMove(int row, int col) {
     if (board[row][col] == '-') {
+      //destaparCelda(row, col);
       board[row][col] = 'X';
       checkGameWinner();
       if (gameWinner == '-') {
-        machinePlay();
+        if (!minesColocades) {
+          machinePlay();
+        }
       }
+    } else if (board[row][col] == 'O') {
+      gameWinner = 'O';
+      gameIsOver = true;
     }
   }
 
-  // Fa una jugada de la màquina, només busca la primera posició lliure
+  /*
+  void destaparCelda(row, col) {
+    if (board[row][col] == 'X') {
+      return;
+    } else {
+      if (board[row][col] != 'O'){
+        board[row][col] == 'X';
+        for (row, col){
+          
+        }
+      }
+    }
+  }
+  */
+
+  //
+  // Coloca las bombas al inicio de la partida
+  //
   void machinePlay() {
+    boardInfo =
+        List.generate(midaTauler, (index) => List<int>.filled(midaTauler, 0));
+
     //bool moveMade = false;
 
     // Buscar una casella lliure '-'
@@ -61,22 +89,47 @@ class AppData with ChangeNotifier {
       if (moveMade) break;
     }
     */
-    while (numeroMines != 0) {
+    for (int i = 0; i < numeroMines;) {
       int fila = random.nextInt(midaTauler);
       int columna = random.nextInt(midaTauler);
-      if (board[fila][columna] != 'X') {
+      if (board[fila][columna] != 'X' && board[fila][columna] != 'O') {
         board[fila][columna] = 'O';
-        numeroMines--;
+        i++;
       }
-
-      print(numeroMines);
     }
 
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board[0].length; j++) {
+        if (board[i][j] != 'O') {
+          int infoMines = 0;
+          for (int rowOffset = -1; rowOffset <= 1; rowOffset++) {
+            for (int colOffset = -1; colOffset <= 1; colOffset++) {
+              int newRow = i + rowOffset;
+              int newCol = j + colOffset;
+              if (newRow >= 0 &&
+                  newRow < midaTauler &&
+                  newCol >= 0 &&
+                  newCol < midaTauler) {
+                if (board[newRow][newCol] == 'O') {
+                  infoMines++;
+                }
+              }
+            }
+          }
+          //board[i][j] = infoMines.toString();
+          boardInfo[i][j] = infoMines;
+        } else {
+          boardInfo[i][j] = -1;
+        }
+      }
+    }
+    minesColocades = true;
     checkGameWinner();
   }
 
-  // Comprova si el joc ja té un tres en ratlla
-  // No comprova la situació d'empat
+  //
+  // Funcion recursiva para ver los numeros al lado de la bomba
+  //
   void checkGameWinner() {
     for (int i = 0; i < 3; i++) {
       // Comprovar files

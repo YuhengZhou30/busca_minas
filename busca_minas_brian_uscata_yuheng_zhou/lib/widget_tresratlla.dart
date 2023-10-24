@@ -55,7 +55,8 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
               return GestureDetector(
                 onTapUp: (TapUpDetails details) {
                   print(appData.board);
-                  print(appData.midaTauler);
+                  print(appData.boardInfo);
+                  //print(appData.boardInfo);
                   final int row = (details.localPosition.dy /
                           (context.size!.height / appData.midaTauler))
                       .floor();

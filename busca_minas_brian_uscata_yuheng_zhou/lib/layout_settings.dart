@@ -58,8 +58,15 @@ class LayoutSettingsState extends State<LayoutSettings> {
                   onSelectedItemChanged: (index) {
                     if (type == "taulell") {
                       appData.colorPlayer = options[index];
+                        List<String> dimensions = options[index].split('x');
+                       int newSize = int.parse(dimensions[0]);
+                      appData.midaTauler = newSize;
+                      //print( appData.midaTauler);
                     } else {
                       appData.colorOpponent = options[index];
+                       int newNumberOfMines = int.parse(options[index]);
+                        appData.numeroMines = newNumberOfMines;
+                        //print( appData.numeroMines);
                     }
                     // Actualitzar el widget
                     setState(() {});

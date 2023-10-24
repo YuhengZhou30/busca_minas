@@ -4,6 +4,8 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
+import 'layout_play.dart';
+
 class AppData with ChangeNotifier {
   Random random = Random();
 
@@ -38,6 +40,7 @@ class AppData with ChangeNotifier {
   // Fa una jugada, primer el jugador després la maquina
   void playMove(int row, int col) {
     if (board[row][col] == '-') {
+      LayoutPlayState.contador++;
       //destaparCelda(row, col);
       board[row][col] = 'X';
       checkGameWinner();
@@ -46,6 +49,8 @@ class AppData with ChangeNotifier {
           machinePlay();
         }
       }
+
+
     } else if (board[row][col] == 'O') {
       gameWinner = 'O';
       gameIsOver = true;

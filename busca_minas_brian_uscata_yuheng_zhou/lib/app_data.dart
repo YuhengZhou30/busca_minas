@@ -38,7 +38,12 @@ class AppData with ChangeNotifier {
   // Fa una jugada, primer el jugador després la maquina
   void playMove(int row, int col) {
     if (board[row][col] == '-') {
-      //destaparCelda(row, col);
+      if (!minesColocades) {
+        machinePlay();
+      }
+
+      destaparCelda(row, col);
+
       board[row][col] = 'X';
       checkGameWinner();
       if (gameWinner == '-') {
@@ -52,20 +57,27 @@ class AppData with ChangeNotifier {
     }
   }
 
-  /*
   void destaparCelda(row, col) {
+    int row2, col2;
     if (board[row][col] == 'X') {
       return;
     } else {
-      if (board[row][col] != 'O'){
-        board[row][col] == 'X';
-        for (row, col){
-          
+      if (board[row][col] != 'O') {
+        board[row][col] = 'X';
+        for (row2 = (row - 1).clamp(0, midaTauler - 1);
+            row2 <= (row + 1).clamp(0, midaTauler - 1);
+            row2++) {
+          for (col2 = (col - 1).clamp(0, midaTauler - 1);
+              col2 <= (col + 1).clamp(0, midaTauler - 1);
+              col2++) {
+            if (board[row2][col2] != 'O') {
+              destaparCelda(col2, row2);
+            }
+          }
         }
       }
     }
   }
-  */
 
   //
   // Coloca las bombas al inicio de la partida

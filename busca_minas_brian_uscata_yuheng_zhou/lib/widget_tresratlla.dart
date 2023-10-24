@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'app_data.dart';
+import 'layout_play.dart';
 import 'widget_tresratlla_painter.dart';
 
 class WidgetTresRatlla extends StatefulWidget {
@@ -28,6 +29,8 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
     AppData appData = Provider.of<AppData>(context);
     return GestureDetector(
       onTapUp: (TapUpDetails details) {
+        LayoutPlayState.contador++;
+
         final int row = (details.localPosition.dy /
                 (context.size!.height / appData.midaTauler))
             .floor();

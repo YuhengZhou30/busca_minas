@@ -57,24 +57,25 @@ class AppData with ChangeNotifier {
     }
   }
 
-  void destaparCelda(row, col) {
-    int row2, col2;
-    if (board[row][col] == 'X') {
-      return;
-    } else {
-      if (board[row][col] != 'O') {
-        board[row][col] = 'X';
-        for (row2 = (row - 1).clamp(0, midaTauler - 1);
-            row2 <= (row + 1).clamp(0, midaTauler - 1);
-            row2++) {
-          for (col2 = (col - 1).clamp(0, midaTauler - 1);
-              col2 <= (col + 1).clamp(0, midaTauler - 1);
-              col2++) {
-            if (board[row2][col2] != 'O') {
-              destaparCelda(col2, row2);
-            }
-          }
-        }
+  void destaparCelda(int row, int col) {
+    if (row < 0 ||
+        row >= midaTauler ||
+        col < 0 ||
+        col >= midaTauler ||
+        board[row][col] == 'X' ||
+        boardInfo[row][col] > 0) {
+      return; // Condición de salida para detener la recursión
+    }
+
+    board[row][col] = 'X'; // Destapa la celda actual
+
+    for (int row2 = (row - 1).clamp(0, midaTauler - 1);
+        row2 <= (row + 1).clamp(0, midaTauler - 1);
+        row2++) {
+      for (int col2 = (col - 1).clamp(0, midaTauler - 1);
+          col2 <= (col + 1).clamp(0, midaTauler - 1);
+          col2++) {
+        destaparCelda(row2, col2);
       }
     }
   }
@@ -101,6 +102,7 @@ class AppData with ChangeNotifier {
       if (moveMade) break;
     }
     */
+
     for (int i = 0; i < numeroMines;) {
       int fila = random.nextInt(midaTauler);
       int columna = random.nextInt(midaTauler);

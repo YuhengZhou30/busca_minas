@@ -39,7 +39,8 @@ class LayoutPlayState extends State<LayoutPlay> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Centra la barra de navegación
+          mainAxisAlignment:
+              MainAxisAlignment.spaceBetween, // Centra la barra de navegación
           children: [
             Text('$contador'), // Muestra el contador a la izquierda
             const Text("Partida"),

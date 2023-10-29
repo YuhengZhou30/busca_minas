@@ -2,33 +2,35 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:math';
 import 'dart:ui' as ui;
+import 'package:cupertino_base/layout_play.dart';
 import 'package:flutter/material.dart';
-
-import 'layout_play.dart';
 
 class AppData with ChangeNotifier {
   Random random = Random();
 
-  // App status
-  String colorPlayer = "Verd";
-  String colorOpponent = "Taronja";
 
+  String defaultTablero = "15x15";
+  String defaultMinas = "20";
+
+  static int banderasPuestas=0;
+  bool petar =false;
+  bool bombasDesactivadas=false;
   List<List<String>> board = [];
   List<List<int>> boardInfo = [];
+  List<List<String>> boardScreen = []; //ImageList
   bool gameIsOver = false;
   String gameWinner = '-';
 
-  int midaTauler = 9;
-  int numeroMines = 20;
+  int midaTauler = 15;
+  static int numeroMines = 20;
   bool minesColocades = false;
 
-
-  ui.Image? imageFlag ;
-  ui.Image? noDescubierto;
+  ui.Image? imagePlayer;
+  ui.Image? imageOpponent;
 
   ui.Image? image0;
   ui.Image? image1;
-  ui.Image? image2 ;
+  ui.Image? image2;
   ui.Image? image3;
   ui.Image? image4;
   ui.Image? image5;
@@ -36,46 +38,69 @@ class AppData with ChangeNotifier {
   ui.Image? image7;
   ui.Image? image8;
   ui.Image? imageBomb;
-
+  ui.Image? imageFlag;
   bool imagesReady = false;
 
   void resetGame() {
-    LayoutPlayState.contador=0;
+    banderasPuestas=0;
+     petar =false;
+     bombasDesactivadas=false;
+    board = [];
+    boardInfo = [];
+    boardScreen = []; //ImageList
+    gameIsOver = false;
+    gameWinner = '-';
     if (midaTauler == 9) {
       board = List.generate(9, (index) => List.filled(9, '-'));
+      boardScreen = List.generate(9, (index) => List.filled(9, '-'));
     } else if (midaTauler == 15) {
       board = List.generate(15, (index) => List.filled(15, '-'));
+      boardScreen = List.generate(15, (index) => List.filled(15, '-'));
     }
     minesColocades = false;
     gameIsOver = false;
     gameWinner = '-';
 
+    notifyListeners();
   }
 
   // Fa una jugada, primer el jugador després la maquina
   void playMove(int row, int col) {
-    if (board[row][col] == '-') {
+
+
+    if (board[row][col] == 'O') {
+      petar=true;
+      gameWinner = 'O';
+      gameIsOver = true;
+      checkGameWinner();
+    } else if (boardScreen[row][col] == '-') {
       if (!minesColocades) {
         machinePlay();
       }
 
-      if (boardInfo[row][col] == 0) {
-        destaparCelda(row, col);
-      } else {
-        board[row][col] = boardInfo[row][col].toString();
-      }
+      destaparCelda(row, col);
 
-      checkGameWinner();
       if (gameWinner == '-') {
         if (!minesColocades) {
           machinePlay();
         }
       }
-    } else if (board[row][col] == 'O') {
-      gameWinner = 'O';
-      gameIsOver = true;
     }
-    LayoutPlayState.contador+=1;
+    int bombasRestantes=0;
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board[i].length; j++) {
+        if (board[i][j]=="O"){
+          bombasRestantes+=1;
+        }
+
+      }
+    }
+    if (bombasRestantes==0){
+      bombasDesactivadas=true;
+      checkGameWinner();
+    }
+
+
   }
 
   void destaparCelda(int row, int col) {
@@ -83,24 +108,22 @@ class AppData with ChangeNotifier {
         row >= midaTauler ||
         col < 0 ||
         col >= midaTauler ||
-        board[row][col] != '-' ||
-        boardInfo[row][col] == -1) {
+        board[row][col] == 'X' ||
+        boardInfo[row][col] > 0) {
+      boardScreen[row][col] = boardInfo[row][col].toString();
       return; // Condición de salida para detener la recursión
     }
 
-    if (boardInfo[row][col] == 0) {
-      board[row][col] = '0';
-      for (int row2 = (row - 1).clamp(0, midaTauler - 1);
-      row2 <= (row + 1).clamp(0, midaTauler - 1);
-      row2++) {
-        for (int col2 = (col - 1).clamp(0, midaTauler - 1);
-        col2 <= (col + 1).clamp(0, midaTauler - 1);
-        col2++) {
-          destaparCelda(row2, col2);
-        }
+    board[row][col] = 'X'; // Destapa la celda actual
+
+    for (int row2 = (row - 1).clamp(0, midaTauler - 1);
+        row2 <= (row + 1).clamp(0, midaTauler - 1);
+        row2++) {
+      for (int col2 = (col - 1).clamp(0, midaTauler - 1);
+          col2 <= (col + 1).clamp(0, midaTauler - 1);
+          col2++) {
+        destaparCelda(row2, col2);
       }
-    } else {
-      board[row][col] = boardInfo[row][col].toString();
     }
   }
 
@@ -154,7 +177,6 @@ class AppData with ChangeNotifier {
               }
             }
           }
-          //board[i][j] = infoMines.toString();
           boardInfo[i][j] = infoMines;
         } else {
           boardInfo[i][j] = -1;
@@ -162,58 +184,29 @@ class AppData with ChangeNotifier {
       }
     }
     minesColocades = true;
-    checkGameWinner();
   }
 
   //
   // Funcion recursiva para ver los numeros al lado de la bomba
   //
   void checkGameWinner() {
-    for (int i = 0; i < 3; i++) {
-      // Comprovar files
-      if (board[i][0] == board[i][1] &&
-          board[i][1] == board[i][2] &&
-          board[i][0] != '-') {
-        //gameIsOver = true;
-        //gameWinner = board[i][0];
-        return;
-      }
-
-      // Comprovar columnes
-      if (board[0][i] == board[1][i] &&
-          board[1][i] == board[2][i] &&
-          board[0][i] != '-') {
-        //gameIsOver = true;
-        //gameWinner = board[0][i];
-        return;
-      }
+    LayoutPlayState.timer.cancel();
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board.length; j++) {}
     }
 
-    // Comprovar diagonal principal
-    if (board[0][0] == board[1][1] &&
-        board[1][1] == board[2][2] &&
-        board[0][0] != '-') {
-      //gameIsOver = true;
-      //gameWinner = board[0][0];
-      return;
+    if (gameIsOver || bombasDesactivadas) {
+
+      gameWinner = 'O';
+    }else{
+      gameWinner = '-';
     }
 
-    // Comprovar diagonal secundària
-    if (board[0][2] == board[1][1] &&
-        board[1][1] == board[2][0] &&
-        board[0][2] != '-') {
-      //gameIsOver = true;
-      //gameWinner = board[0][2];
-      return;
-    }
-
-    // No hi ha guanyador, torna '-'
-    gameWinner = '-';
   }
 
   // Carrega les imatges per dibuixar-les al Canvas
   Future<void> loadImages(BuildContext context) async {
-    // Si ja estàn carregades, no cal fer ress
+    // Si ja estàn carregades, no cal fer res
     if (imagesReady) {
       notifyListeners();
       return;
@@ -221,9 +214,10 @@ class AppData with ChangeNotifier {
 
     // Força simular un loading
     await Future.delayed(const Duration(milliseconds: 500));
-    Image tmpfacingdown = Image.asset('assets/images/facingDown.png');
-    Image flagImageAsset = Image.asset('assets/images/flag.png');
 
+    Image tmpPlayer = Image.asset('assets/images/player.png');
+    Image tmpOpponent = Image.asset('assets/images/opponent.png');
+    //
     Image tmp0 = Image.asset('assets/images/0.png');
     Image tmp1 = Image.asset('assets/images/1.png');
     Image tmp2 = Image.asset('assets/images/2.png');
@@ -233,15 +227,17 @@ class AppData with ChangeNotifier {
     Image tmp6 = Image.asset('assets/images/6.png');
     Image tmp7 = Image.asset('assets/images/7.png');
     Image tmp8 = Image.asset('assets/images/8.png');
+    Image tmpFlag = Image.asset('assets/images/flag.png');
     Image tmpBomb = Image.asset('assets/images/bomb.png');
 
-    // Carrega les imatges
     if (context.mounted) {
-      image0= await convertWidgetToUiImage(tmp0);
+      image0 = await convertWidgetToUiImage(tmp0);
     }
+
     if (context.mounted) {
       image1 = await convertWidgetToUiImage(tmp1);
     }
+
     if (context.mounted) {
       image2 = await convertWidgetToUiImage(tmp2);
     }
@@ -263,16 +259,22 @@ class AppData with ChangeNotifier {
     if (context.mounted) {
       image8 = await convertWidgetToUiImage(tmp8);
     }
+
     if (context.mounted) {
       imageBomb = await convertWidgetToUiImage(tmpBomb);
     }
+    if (context.mounted) {
+      imageFlag = await convertWidgetToUiImage(tmpFlag);
+    }
 
     if (context.mounted) {
-      imageFlag  = await convertWidgetToUiImage(flagImageAsset);
+      imagePlayer = await convertWidgetToUiImage(tmpPlayer);
     }
+
     if (context.mounted) {
-      noDescubierto  = await convertWidgetToUiImage(tmpfacingdown);
+      imageOpponent = await convertWidgetToUiImage(tmpOpponent);
     }
+
     imagesReady = true;
 
     // Notifica als escoltadors que les imatges estan carregades

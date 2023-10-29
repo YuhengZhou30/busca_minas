@@ -10,24 +10,23 @@ class LayoutSettings extends StatefulWidget {
 }
 
 class LayoutSettingsState extends State<LayoutSettings> {
-  List<int> midaTaulers = [9, 15];
-  List<int> minesTauler = [5, 10, 20];
+  List<String> midaTaulell = ["9x9", "15x15"];
+  List<String> numMinas = ["5", "10", "20"];
 
   // Mostra el CupertinoPicker en un diàleg.
   void _showPicker(String type) {
-    List<int> options = type == "tauler" ? midaTaulers : minesTauler;
-    String title = type == "tauler"
-        ? "Selecciona el color del jugador"
-        : "Selecciona el color de l'oponent";
+    List<String> options = type == "taulell" ? midaTaulell : numMinas;
+    String title = type == "taulell"
+        ? "Selecciona la mida del taulell"
+        : "Selecciona numeros de mines";
 
     // Troba l'índex de la opció actual a la llista d'opcions
     AppData appData = Provider.of<AppData>(context, listen: false);
-
-    int currentValue =
-        type == "tauler" ? appData.midaTauler : appData.numeroMines;
+    String currentValue =
+    type == "taulell" ? appData.defaultTablero.toString() : appData.defaultMinas.toString();
     int currentIndex = options.indexOf(currentValue);
     FixedExtentScrollController scrollController =
-        FixedExtentScrollController(initialItem: currentIndex);
+    FixedExtentScrollController(initialItem: currentIndex);
 
     showCupertinoModalPopup<void>(
       context: context,
@@ -57,16 +56,23 @@ class LayoutSettingsState extends State<LayoutSettings> {
                   itemExtent: 32.0,
                   scrollController: scrollController,
                   onSelectedItemChanged: (index) {
-                    if (type == "tauler") {
-                      appData.midaTauler = options[index];
+                    if (type == "taulell") {
+                      appData.defaultTablero = options[index];
+                      List<String> dimensions = options[index].split('x');
+                      int newSize = int.parse(dimensions[0]);
+                      appData.midaTauler = newSize;
+                      //print( appData.midaTauler);
                     } else {
-                      appData.numeroMines = options[index];
+                      appData.defaultMinas = options[index];
+                      int newNumberOfMines = int.parse(options[index]);
+                      AppData.numeroMines = newNumberOfMines;
+                      //print( appData.numeroMines);
                     }
                     // Actualitzar el widget
                     setState(() {});
                   },
                   children: options
-                      .map((color) => Center(child: Text(color.toString())))
+                      .map((color) => Center(child: Text(color)))
                       .toList(),
                 ),
               ),
@@ -95,17 +101,17 @@ class LayoutSettingsState extends State<LayoutSettings> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Text("Mida del tauler: "),
+              const Text("Mida del Taulell: "),
               CupertinoButton(
-                onPressed: () => _showPicker("tauler"),
-                child: Text(appData.colorPlayer),
+                onPressed: () => _showPicker("taulell"),
+                child: Text(appData.defaultTablero),
               )
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Text("Color de l'oponent: "),
+              const Text("Numeros de mines: "),
               CupertinoButton(
                 onPressed: () => _showPicker("mines"),
-                child: Text(appData.colorOpponent),
+                child: Text(appData.defaultMinas),
               )
             ]),
           ],

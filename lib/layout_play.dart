@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'package:cupertino_base/app_data.dart';
 import 'package:flutter/cupertino.dart';
-import 'widget_tresratlla.dart';
+import 'widget_buscaminas.dart';
 
 class LayoutPlay extends StatefulWidget {
   const LayoutPlay({Key? key}) : super(key: key);
@@ -11,8 +12,7 @@ class LayoutPlay extends StatefulWidget {
 
 class LayoutPlayState extends State<LayoutPlay> {
   int elapsedTime = 0;
-  static int contador = 0; // Variable contador
-  late Timer timer;
+  static late Timer timer;
 
   @override
   void initState() {
@@ -42,7 +42,8 @@ class LayoutPlayState extends State<LayoutPlay> {
           mainAxisAlignment:
               MainAxisAlignment.spaceBetween, // Centra la barra de navegación
           children: [
-            Text('$contador'), // Muestra el contador a la izquierda
+
+            Text((AppData.numeroMines-AppData.banderasPuestas).toString()), // Muestra el contador a la izquierda
             const Text("Partida"),
             Text('$elapsedTime s'), // Muestra el tiempo transcurrido
           ],

@@ -56,14 +56,17 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
       onSecondaryTapDown: (TapDownDetails details) {
         if(appData.gameWinner != '-') return;
 
-        AppData.banderasPuestas++;
+
         final int row = calculateRow(details.localPosition.dy);
         final int col = calculateCol(details.localPosition.dx);
-
-        if (appData.board[row][col] == 'F') {
-          appData.board[row][col] = '-';
-        } else {
-          appData.board[row][col] = 'F';
+        if (appData.board[row][col]=='-' || appData.board[row][col]=='F' || appData.board[row][col]=='O'){
+          if (appData.board[row][col] == 'F') {
+            AppData.banderasPuestas--;
+            appData.board[row][col] = '-';
+          } else {
+            AppData.banderasPuestas++;
+            appData.board[row][col] = 'F';
+          }
         }
 
         setState(() {});
@@ -88,7 +91,7 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
                   if(appData.gameWinner != '-') return;
                   //print(appData.board);
                   //print(appData.board);
-                  //print(appData.boardInfo);
+
                   final int row = (details.localPosition.dy /
                           (context.size!.height / appData.midaTauler))
                       .floor();
